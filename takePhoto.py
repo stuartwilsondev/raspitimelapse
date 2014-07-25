@@ -107,7 +107,7 @@ class TimeLapseImage(object):
   def generate_unique_file_name(self):
     today = self.get_today()
 
-    file_name = "img_%d-%d-%d_%d_%d:" % (
+    file_name = "img_%d-%d-%d_%d_%d" % (
      today.year,
      today.month,
      today.day,
