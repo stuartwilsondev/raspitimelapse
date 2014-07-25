@@ -7,6 +7,7 @@ import logging
 from datetime import datetime
 import argparse
 
+#Global parameter to set if we log to stdout or just a file
 log_to_screen = False
 
 #Set global logger
@@ -16,6 +17,7 @@ logging.basicConfig(
   level=logging.INFO
 )
 
+#Wrapper around standard logger. Defaults to INFO
 def log_message(message,level='info'):
 
   if log_to_screen:
@@ -39,10 +41,7 @@ def log_message(message,level='info'):
   else:
     logging.info(message)
 
-
-
-
-
+#Class to create a unique directory (or provide the current one)
 class UniqueDirectory(object):
 
   def __init__(self):
@@ -74,8 +73,7 @@ class UniqueDirectory(object):
     return directory_name
 
 
-#Maxwidth 2592
-#MaxHeight 1944
+#Image class Maxwidth 2592 MaxHeight 1944
 class TimeLapseImage(object):
 
   def __init__(self,width,height,directory):
@@ -129,7 +127,7 @@ class TimeLapseImage(object):
 
     return command
 
-
+#Main
 def main():
 
     parser = argparse.ArgumentParser()
