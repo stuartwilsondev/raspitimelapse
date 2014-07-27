@@ -2,7 +2,6 @@
 
 import os
 import time
-#import RPi.GPIO as GPIO
 import logging
 from datetime import datetime
 import argparse
@@ -56,7 +55,7 @@ class UniqueDirectory(object):
 
   def generate_directory_name(self):
     today =  self.get_today()
-    directory_name = "timelapse_%d-%d-%d_%d" % (
+    directory_name = "/mnt/usb/timelapse_%d-%d-%d_%d" % (
        today.year,
        today.month,
        today.day,
@@ -116,7 +115,7 @@ class TimeLapseImage(object):
     return file_name
 
   def create_command(self):
-    command = "raspistill -w %d -h %d -o %s/%s.jpg -sh 40 -awb auto -mm average -v" % (
+    command = "streamer -o raspistill %s/%s.jpg" % (
         self.get_width(),
         self.get_height(),
         self.get_directory().get_directory_name(),
