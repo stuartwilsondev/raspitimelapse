@@ -115,9 +115,7 @@ class TimeLapseImage(object):
     return file_name
 
   def create_command(self):
-    command = "streamer -o raspistill %s/%s.jpg" % (
-        self.get_width(),
-        self.get_height(),
+    command = "streamer -o %s/%s.jpg" % (
         self.get_directory().get_directory_name(),
         self.get_file_name()
       )
