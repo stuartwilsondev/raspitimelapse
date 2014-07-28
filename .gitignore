@@ -1,2 +1,3 @@
 img_*
 *.log
+.idea/*
