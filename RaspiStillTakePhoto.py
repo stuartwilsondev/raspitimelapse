@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
 from TakePhoto import *
+import RPi.GPIO as GPIO
 
 
 def create_command(width, height, directory, file_name):
-    command = "streamer -o %s/%s.jpeg" % (
+    command = "raspistill -w %d -h %d -o %s/%s.jpg -sh 40 -awb auto -mm average -v" % (
+        width,
+        height,
         directory,
         file_name
     )
@@ -41,7 +44,7 @@ def main():
     log_message('Started')
 
     timelapse_directory = UniqueDirectory(parent_directory)
-    img = TimeLapseImage(width, height, timelapse_directory.get_directory_name())
+    img = TimeLapseImage(width, height,  timelapse_directory.get_directory_name())
 
     command_to_run = create_command(
         img.get_width(),
@@ -53,6 +56,7 @@ def main():
     #Run the command
     os.system(command_to_run)
 
+    log_message('Finished')
 
 if __name__ == '__main__':
     main()

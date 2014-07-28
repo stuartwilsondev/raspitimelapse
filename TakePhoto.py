@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 import os
-import RPi.GPIO as GPIO
 import logging
 from datetime import datetime
 import argparse
 
-#Global parameter to set if we log to stdout or just a file
+# Global parameter to set if we log to stdout or just a file
 log_to_screen = False
 
 #Set global logger
@@ -43,9 +42,11 @@ def log_message(message, level='info'):
 
 #Class to create a unique directory (or provide the current one)
 class UniqueDirectory(object):
-    def __init__(self):
+    def __init__(self, directory):
+        self.parent_directory = directory
         self.today = datetime.now()
         self.name = self.generate_directory_name()
+
 
     def get_today(self):
         return self.today
@@ -53,9 +54,16 @@ class UniqueDirectory(object):
     def get_directory_name(self):
         return self.name
 
+    def get_parent_directory(self):
+        parent_directory = self.parent_directory
+
+        return parent_directory.rstrip('/')
+
     def generate_directory_name(self):
         today = self.get_today()
-        directory_name = "timelapse_%d-%d-%d_%d" % (
+
+        directory_name = "%s/timelapse_%d-%d-%d_%d" % (
+            self.get_parent_directory(),
             today.year,
             today.month,
             today.day,
@@ -80,7 +88,6 @@ class TimeLapseImage(object):
         self.height = height
         self.directory = directory
         self.file_name = self.generate_unique_file_name()
-        self.command = self.create_command()
 
     def get_height(self):
         return self.height
@@ -97,9 +104,6 @@ class TimeLapseImage(object):
     def get_file_name(self):
         return str(self.file_name)
 
-    def get_command(self):
-        return self.command
-
     def generate_unique_file_name(self):
         today = self.get_today()
 
@@ -113,50 +117,3 @@ class TimeLapseImage(object):
 
         return file_name
 
-    def create_command(self):
-        command = "raspistill -w %d -h %d -o %s/%s.jpg -sh 40 -awb auto -mm average -v" % (
-            self.get_width(),
-            self.get_height(),
-            self.get_directory().get_directory_name(),
-            self.get_file_name()
-        )
-
-        log_message("Command to run: %s" % command)
-
-        return command
-
-
-#Main
-def main():
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('-l', action='store_true', default=False,
-                        help='Log to the console as well as file')
-
-    parser.add_argument('-width', default=800,
-                        help='Captured image Width (default 800)')
-
-    parser.add_argument('-height', default=600,
-                        help='Captured image Height (default 600)')
-
-    args = parser.parse_args()
-
-    global log_to_screen
-    log_to_screen = args.l
-
-    width = args.width
-    height = args.height
-
-    log_message('Started')
-
-    directory = UniqueDirectory()
-    img = TimeLapseImage(width, height, directory)
-
-    #Run the command
-    os.system(img.get_command())
-
-    log_message('Finished')
-
-
-if __name__ == '__main__':
-    main()
